@@ -628,7 +628,12 @@ def main() -> None:
                 except Exception:
                     fname_email = "unknown"
 
-                file_path = OUT_DIR / f"token_{fname_email}_{int(time.time())}.json"
+                tokens_dir = OUT_DIR / "tokens"
+                try:
+                    tokens_dir.mkdir(parents=True, exist_ok=True)
+                except Exception:
+                    pass
+                file_path = tokens_dir / f"token_{fname_email}_{int(time.time())}.json"
                 try:
                     file_path.write_text(token_json, encoding="utf-8")
                     print(f"[*] 成功! Token 已保存至: {file_path}")
@@ -636,12 +641,14 @@ def main() -> None:
                     print(f"[Error] 保存 token 失败: {e}")
 
                 try:
-                    acc_file = OUT_DIR / "accounts.txt"
+                    acc_dir = OUT_DIR / "tokens"
+                    acc_dir.mkdir(parents=True, exist_ok=True)
+                    acc_file = acc_dir / "accounts.txt"
                     acc_file.write_text("", encoding="utf-8", errors="ignore") if not acc_file.exists() else None
                 except Exception:
                     pass
                 try:
-                    with open(OUT_DIR / "accounts.txt", "a", encoding="utf-8") as f:
+                    with open(acc_dir / "accounts.txt", "a", encoding="utf-8") as f:
                         f.write(f"{email}----{password}\n")
                 except Exception as e:
                     print(f"[Error] 保存账号信息失败: {e}")
