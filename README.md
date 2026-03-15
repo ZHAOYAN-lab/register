@@ -17,8 +17,10 @@
 [![Telegram](https://img.shields.io/badge/Telegram-0088CC?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/MasterAlanLab_Channel)
 
 ### 🔧 资源推荐
-- YesCaptcha 推荐注册链接（grok Turnstile 云解）：https://yescaptcha.com/i/tlkF6o
-- Tavily API Key 闲鱼小店：如果你需要现成可用的 Tavily API Key，可以直接前往闲鱼小店下单：https://m.tb.cn/h.i2HIraW?tk=iiQYUF6nihb
+- YesCaptcha 推荐注册链接（自动验证码识别工具）：https://yescaptcha.com/i/tlkF6o
+
+### ⚠️ Tavily 重要提示
+- Tavily 官方注册流程已调整，原有注册机目前不可用，后续更新请关注上方频道
 
 ### 💬 交流与反馈
 - TG 频道：https://t.me/MasterAlanLab
