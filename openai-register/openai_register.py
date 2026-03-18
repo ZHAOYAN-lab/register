@@ -403,6 +403,19 @@ def _clean_invalid_in_cpa(pm, args):
         print(f"[CPA] 清理失败: {e}")
         return None
 
+
+def _count_valid_cpa_tokens(pm, args):
+    if not pm:
+        return 0
+    try:
+        files = pm.fetch_auth_files(timeout=max(5, args.cpa_timeout))
+        target = pm.target_type.lower()
+        valid = [f for f in files if _get_item_type(f).lower() == target]
+        return len(valid)
+    except Exception as e:
+        print(f"[CPA] 统计 token 失败: {e}")
+        return 0
+
 # ========== 主注册流程 (恢复详细日志与异常捕获) ==========
 
 def run(proxy: Optional[str]):
@@ -542,6 +555,8 @@ def main():
     parser.add_argument("--cpa-used-threshold", type=int, default=95, help="CPA used_percent 阈值")
     parser.add_argument("--cpa-clean", action="store_true", help="注册后自动清理 CPA 失效账号")
     parser.add_argument("--cpa-upload", action="store_true", help="注册后自动上传 CPA")
+    parser.add_argument("--cpa-target-count", type=int, default=300, help="目标 token 数(有效)")
+    parser.add_argument("--cpa-prune-local", action="store_true", help="上传成功后删除本地 token 文件与账号行")
     args = parser.parse_args()
 
     tokens_dir = OUT_DIR / "tokens"
@@ -553,15 +568,29 @@ def main():
     while True:
         count += 1
         print(f"\n[{datetime.now().strftime('%H:%M:%S')}] >>> 流程 #{count} <<<")
+
+        if pm:
+            if args.cpa_clean:
+                _clean_invalid_in_cpa(pm, args)
+            current_count = _count_valid_cpa_tokens(pm, args)
+            print(f"[CPA] 当前有效 token: {current_count} / {args.cpa_target_count}")
+            if current_count >= args.cpa_target_count:
+                if args.once:
+                    break
+                wait_time = random.randint(args.sleep_min, args.sleep_max)
+                print(f"[*] 随机休息 {wait_time} 秒...")
+                time.sleep(wait_time)
+                continue
+
         res = run(args.proxy)
         if res:
             token_json, email, real_pwd = res
             print(f"[🎉] 成功! {email} ---- {real_pwd}")
-            
+
             # 1. 保存账号密码到 tokens/accounts.txt
             with open(tokens_dir / "accounts.txt", "a", encoding="utf-8") as f:
                 f.write(f"{email}----{real_pwd}\n")
-            
+
             # 2. 保存详细 Token JSON
             fname_email = email.replace("@", "_")
             token_file = tokens_dir / f"token_{fname_email}_{int(time.time())}.json"
@@ -569,18 +598,29 @@ def main():
             print(f"[*] Token 文件已保存: {token_file.name}")
 
             # 3. 上传 CPA（可选）
+            upload_ok = False
             if args.cpa_upload:
-                _upload_token_to_cpa(pm, token_json, email, proxy=args.proxy or "")
+                upload_ok = _upload_token_to_cpa(pm, token_json, email, proxy=args.proxy or "")
 
-            # 4. 清理 CPA 失效账号（可选）
-            if args.cpa_clean:
+            # 4. 上传成功后按需删除本地文件/账号行
+            if upload_ok and args.cpa_prune_local:
+                try:
+                    if token_file.exists():
+                        token_file.unlink()
+                        print(f"[本地清理] 已删除 token 文件: {token_file.name}")
+                except Exception as e:
+                    print(f"[本地清理] 删除 token 文件失败: {e}")
+                _remove_account_entry(tokens_dir / "accounts.txt", email, real_pwd)
+
+            # 5. 注册后再清理一次（可选）
+            if pm and args.cpa_clean:
                 _clean_invalid_in_cpa(pm, args)
         else:
             print("[-] 本次注册流程未能完成。")
-        
+
         if args.once:
             break
-            
+
         wait_time = random.randint(args.sleep_min, args.sleep_max)
         print(f"[*] 随机休息 {wait_time} 秒...")
         time.sleep(wait_time)
