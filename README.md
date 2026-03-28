@@ -37,7 +37,6 @@ uv sync --extra cpa
 
 ### 🔧 资源推荐
 - [YesCaptcha](https://yescaptcha.com/i/tlkF6o)（自动验证码识别工具）
-- [IPFoxy](https://www.ipfoxy.com/invite/masteralan)（IP 代理服务）
 
 ### ⚠️ 重要提示
 - Tavily 官方目前已关闭邮箱注册，原有注册机目前不可用，后续更新请关注上方频道
