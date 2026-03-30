@@ -14,10 +14,10 @@
 
 ### 🔧 资源推荐
 - [YesCaptcha](https://yescaptcha.com/i/tlkF6o)（自动验证码识别工具）
+- [LuckMail](https://mails.luckyous.com/1434E853)（outlook邮箱接码）
 
 ### ⚠️ 重要提示
 - Tavily 官方目前已关闭邮箱注册，原有注册机目前不可用，后续更新请关注上方频道
-- openai-register 当前不可用，等待后续更新
 
 ### 💬 交流与反馈
 - TG 频道：https://t.me/MasterAlanLab

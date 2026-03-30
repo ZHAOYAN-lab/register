@@ -1,15 +1,5 @@
 # OpenAI 自动注册
 
-> ⚠️ 当前不可用，等待后续更新。
-
-## 功能亮点
-- 支持三种邮箱提供商：`LuckMail`、`TempMail.lol` 与 `GPTMail`，可手动指定，也可自动回退。
-- 支持自动上传到 Sub2API，优先使用全局 Admin API Key（`x-api-key`），无需先登录拿 bearer。
-- 支持 **Sub2API 失效账号清理**：全量拉取账号后，在本地精确匹配 `extra.privacy_mode == "training_set_failed"`，再执行删除，不依赖服务端 privacy 过滤结果。
-- 支持 **Sub2API dry-run**：先打印命中账号列表，不删除，避免误删。
-- 支持 CPA 自动上号（上传 token）与失效账号清理（探测 401/用量超阈值后删除）。
-- 支持统一的 `--prune-local`：当 Sub2API / CPA 任一上传成功后，自动删除本地 token 文件和 `tokens/accounts.txt` 里的对应账号行。
-
 ## 环境准备
 基础功能（注册 / Sub2API 上传 / Sub2API 清理）只需要：
 
